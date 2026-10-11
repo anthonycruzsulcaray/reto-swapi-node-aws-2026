@@ -1,29 +1,38 @@
 import { Body, Controller, Get, HttpCode, Param, Post } from '@nestjs/common';
-import { StarwarsService } from '../service/starwars.service';
-import { FilmBody } from '../../domain/entities/film.entities';
-// import { FilmService } from '../../application/service/film.service';
+import { FilmBodyPagedEnglish,FilmBodyEnglish, FilmBodySpanish } from '../../domain/entities/film.entities';
+import { StarwarsService } from '../../application/service/starwars.service';
+import { FilmService } from '../../application/service/film.service';
+
 
 @Controller('starwars')
 export class StarwarsController {
-  constructor(private readonly starwarsService: StarwarsService) { }
+  constructor(
+    private readonly filmService: FilmService,
+    private readonly starwarsService: StarwarsService
+  ) { }
 
   @Get('films')
   @HttpCode(200)
-  async listAll(): Promise<FilmBody[]> {
-    return await this.starwarsService.listall();
+  async listFilms(): Promise<FilmBodyPagedEnglish> {
+    return await this.starwarsService.getListStarwars();
   }
 
   @Get('films/:id')
   @HttpCode(200)
-  async listById(@Param('id') id: string): Promise<FilmBody> {
-    return await this.starwarsService.listById(+id);
+  async listFilmsById(@Param('id') id: string): Promise<FilmBodyEnglish | null> {
+    return await this.starwarsService.getStarwarsById(+id);
   }
 
-  @Post('films')
+  @Get('dynamo/films')
+  @HttpCode(200)
+  async listDynamoFilms(): Promise<FilmBodySpanish[]> {
+    return await this.filmService.getListFilms();
+  }
+  
+  @Post('dynamo/films')
   @HttpCode(201)
-  async add(@Body() requestBody: FilmBody): Promise<FilmBody> {
-    return await this.starwarsService.add(requestBody);
+  async addDynamoFilm(@Body() requestBody: FilmBodyEnglish): Promise<FilmBodySpanish | null> {
+    return await this.filmService.createFilm(requestBody);
   }
-
 
 }

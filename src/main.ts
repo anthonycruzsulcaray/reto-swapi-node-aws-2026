@@ -1,8 +1,9 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
+import { StarwarsModule } from './infrastructure/starwars.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(StarwarsModule);
   await app.listen(process.env.PORT ?? 3000);
+  console.log(`Aplicación disponible en: ${await app.getUrl()}`);
 }
 bootstrap();

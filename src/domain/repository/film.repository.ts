@@ -1,7 +1,9 @@
-import { FilmBody } from "../entities/film.entities";
+import { FilmBodyEnglish, FilmBodySpanish } from "../entities/film.entities";
+
+export const FILM_REPOSITORY = Symbol('FILM_REPOSITORY');
 
 export interface FilmRepository {
-  getListFilms(): Promise<FilmBody[]>;
-  getFilmById(filmId: number): Promise<FilmBody | null>;
-  createFilm(film: FilmBody): Promise<void>;
+  getListFilms(): Promise<FilmBodySpanish[]>;
+  getFilmById(filmId: number): Promise<FilmBodySpanish | null>;
+  createFilm(film: FilmBodyEnglish): Promise<FilmBodyEnglish | null>;
 }

@@ -20,6 +20,7 @@ export class TranslateObject {
                 especies: film.species,
                 creado: film.created,
                 editado: film.edited,
+                url: film.url
             }
             return pelicula;
         } catch (e:any) {
@@ -45,6 +46,7 @@ export class TranslateObject {
                 species: film.especies,
                 created: film.creado,
                 edited: film.editado,
+                url: film.url
             }
             return pelicula;
         } catch (e:any) {
