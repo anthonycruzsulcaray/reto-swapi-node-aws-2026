@@ -5,22 +5,32 @@ import { TranslateObject } from './utils/translateObject';
 import FilmsValidator from './validator/filmsValidation';
 import { DynamoRepository } from './repository/dynamo.repository';
 import { FilmService } from '../application/service/film.service';
-import DynamoDatabase from './database/dynamo.database';
 import { StarwarsApiRest } from './api/swapi.api';
 import { StarwarsService } from '../application/service/starwars.service';
+import { STARWARS_REPOSITORY } from '../domain/repository/starwars.repository';
 import { ConfigModule } from '@nestjs/config';
+import { FILM_REPOSITORY } from '../domain/repository/film.repository';
+import { DynamoDbModule } from './database/dynamo.database';
 
 
 @Module({
-imports: [ConfigModule.forRoot({ isGlobal: true }), HttpModule], 
- controllers: [StarwarsController],
+  imports: [ConfigModule.forRoot({ isGlobal: true }),
+    HttpModule, DynamoDbModule],
+  controllers: [StarwarsController],
   providers: [
     StarwarsService,
-    StarwarsApiRest,
+    {
+      provide: STARWARS_REPOSITORY,
+      useClass: StarwarsApiRest,
+    },
     FilmService,
-    DynamoRepository,
-    DynamoDatabase,
-    TranslateObject,FilmsValidator
+    {
+      provide: FILM_REPOSITORY,
+      useClass: DynamoRepository,
+    },
+
+    TranslateObject, 
+    // FilmsValidator
   ],
 })
-export class StarwarsModule {}
+export class StarwarsModule { }

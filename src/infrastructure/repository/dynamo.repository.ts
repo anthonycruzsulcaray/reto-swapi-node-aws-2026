@@ -1,18 +1,17 @@
-import { Injectable, Logger } from '@nestjs/common';
-import type { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
+import { Inject, Injectable, Logger } from '@nestjs/common';
+import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
 import { GetCommand, PutCommand, ScanCommand } from '@aws-sdk/lib-dynamodb';
-import DynamoDataBase from '../repository/dynamoDB.repository';
 import { FilmRepository } from '../../domain/repository/film.repository';
 import { FilmBodyEnglish, FilmBodySpanish } from '../../domain/entities/film.entities';
 
 @Injectable()
-export class DynamoRepository implements FilmRepository { 
-    private readonly dynamoConn: DynamoDBDocumentClient;
+export class DynamoRepository implements FilmRepository {
     private readonly logger = new Logger(DynamoRepository.name); // Instancia del logger
 
-    constructor(dydb: DynamoDataBase) {
-        this.dynamoConn = dydb.dynamoClient()
-    }
+    constructor(
+        @Inject('DYNAMODB_CLIENT')
+        private readonly dynamoConn: DynamoDBDocumentClient,
+    ) { }
 
     async getListFilms(): Promise<FilmBodySpanish[]> {
         try {
@@ -21,8 +20,8 @@ export class DynamoRepository implements FilmRepository {
                     TableName: process.env.DYNAMO_DB_TABLE,
                 }),
             );
-            console.log("result::: ", result)
-            console.log("result::: ", result.Items)
+            console.log("dynamo getListFilms - result ::: ", result)
+            console.log("dynamo getListFilms - result.items ::: ", result.Items)
             return result.Items as FilmBodySpanish[];
         } catch (error: any) {
             this.logger.error('Error al listar todos los elementos', error.stack);
@@ -30,15 +29,15 @@ export class DynamoRepository implements FilmRepository {
         }
     }
     async getFilmById(id: number): Promise<FilmBodySpanish | null> {
-         try {
+        try {
             const result = await this.dynamoConn.send(
                 new GetCommand({
                     TableName: process.env.DYNAMO_DB_TABLE,
                     Key: { id },
                 }),
             );
-            console.log("result::: ", result)
-            console.log("result::: ", result.Item)
+            console.log("dynamo getFilmById - result ::: ", result)
+            console.log("dynamo getFilmById - result.Item ::: ", result.Item)
             return result.Item as FilmBodySpanish | null;
         } catch (error: any) {
             this.logger.error(`Error al obtener el elemento con ID: ${id}`, error.stack);
@@ -56,12 +55,12 @@ export class DynamoRepository implements FilmRepository {
                     },
                 }),
             );
-            console.log("result::: ", result)
+            console.log("dynamo createFilm - result ::: ", result)
             return film;
         } catch (error: any) {
             this.logger.error(`Error al agregar la película con ID: ${film.id}`, error.stack);
             throw new Error('No se pudo agregar la película');
         }
     }
-    
+
 }

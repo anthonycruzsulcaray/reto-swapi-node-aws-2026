@@ -3,15 +3,15 @@ import { FilmBodySpanish, FilmBodyEnglish } from "../../domain/entities/film.ent
 import { FILM_REPOSITORY } from "../../domain/repository/film.repository";
 import type { FilmRepository } from "../../domain/repository/film.repository";
 import { TranslateObject } from "../../infrastructure/utils/translateObject";
-import FilmsValidator from "../../infrastructure/validator/filmsValidation";
+//import FilmsValidator from "../../infrastructure/validator/filmsValidation";
 
 
 export class FilmService {
     constructor(
         @Inject(FILM_REPOSITORY)
         private readonly filmRepository: FilmRepository,
-        private readonly translate: TranslateObject,
-        private readonly validator: FilmsValidator
+        private readonly translate: TranslateObject
+        // private readonly validator: FilmsValidator
     ) { }
 
     async getListFilms(): Promise<FilmBodySpanish[]> {
@@ -25,20 +25,17 @@ export class FilmService {
             const films = this.translate.filmsToSpanish(dynamoId, item)
             dataResponse.push(films)
         }
-        console.log("dataResponse::: ", dataResponse)
         return dataResponse;
     }
 
     async getFilmById(filmId: number): Promise<FilmBodySpanish | null> {
-        // api startwars
         const swapiResponse = await this.filmRepository.getFilmById(filmId);
-        // translate
         const films = this.translate.filmsToSpanish(filmId, swapiResponse)
         return films
     }
 
     async createFilm(bodyFilm: FilmBodyEnglish): Promise<FilmBodySpanish | null> {
-        this.validator.validate(bodyFilm)
+        // this.validator.validate(bodyFilm)
         bodyFilm.created = new Date().toDateString()
 
         const totalFilms = (await this.filmRepository.getListFilms()).length ?? 0
@@ -46,7 +43,7 @@ export class FilmService {
 
         const filmToEspanish = this.translate.filmsToSpanish(bodyFilm.id, bodyFilm)
         const filmDynamo =await this.filmRepository.createFilm(bodyFilm)
-        console.log("filmDynamo::: ", filmDynamo)
+        console.log("film.service - createFilm ::: ", filmDynamo)
 
         return filmToEspanish
     }
