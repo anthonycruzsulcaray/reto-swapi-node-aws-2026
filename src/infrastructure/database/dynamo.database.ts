@@ -1,27 +1,27 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
 
+export const DYNAMODB_CLIENT = Symbol('DYNAMODB_CLIENT');
+
 @Module({
-  imports: [ConfigModule], // Importamos para poder leer el archivo .env
   providers: [
     {
-      provide: 'DYNAMODB_CLIENT',
-      useFactory: (configService: ConfigService) => {
+      provide: DYNAMODB_CLIENT,
+      useFactory: () => {
+        const { AWS_REGION, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY } = process.env;
         const client = new DynamoDBClient({
-          region: configService.getOrThrow<string>('AWS_REGION'),
+          region: AWS_REGION,
           credentials: {
-            accessKeyId: configService.getOrThrow<string>('AWS_ACCESS_KEY_ID'),
-            secretAccessKey: configService.getOrThrow<string>('AWS_SECRET_ACCESS_KEY'),
+            accessKeyId: AWS_ACCESS_KEY_ID ?? "",
+            secretAccessKey: AWS_SECRET_ACCESS_KEY ?? "",
           },
         });
-
+        
         return DynamoDBDocumentClient.from(client);
       },
-      inject: [ConfigService],
     },
   ],
-  exports: ['DYNAMODB_CLIENT'],
+  exports: [DYNAMODB_CLIENT],
 })
-export class DynamoDbModule {}
+export class DynamoDbModule { }

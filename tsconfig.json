@@ -20,7 +20,7 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
-    "strictPropertyInitialization": false,
+    "strictPropertyInitialization": false, // No se requiere inicializar las propiedades en el constructor
     "types": ["node"] // jest - test / pruebas unitarias
   }
 }

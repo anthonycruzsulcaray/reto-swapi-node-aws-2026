@@ -3,13 +3,14 @@ import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
 import { GetCommand, PutCommand, ScanCommand } from '@aws-sdk/lib-dynamodb';
 import { FilmRepository } from '../../domain/repository/film.repository';
 import { FilmBodyEnglish, FilmBodySpanish } from '../../domain/entities/film.entities';
+import { DYNAMODB_CLIENT } from '../database/dynamo.database';
 
 @Injectable()
 export class DynamoRepository implements FilmRepository {
     private readonly logger = new Logger(DynamoRepository.name); // Instancia del logger
 
     constructor(
-        @Inject('DYNAMODB_CLIENT')
+        @Inject(DYNAMODB_CLIENT)
         private readonly dynamoConn: DynamoDBDocumentClient,
     ) { }
 

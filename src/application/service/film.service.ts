@@ -1,11 +1,11 @@
-import { Inject } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import { FilmBodySpanish, FilmBodyEnglish } from "../../domain/entities/film.entities";
 import { FILM_REPOSITORY } from "../../domain/repository/film.repository";
 import type { FilmRepository } from "../../domain/repository/film.repository";
 import { TranslateObject } from "../../infrastructure/utils/translateObject";
 //import FilmsValidator from "../../infrastructure/validator/filmsValidation";
 
-
+@Injectable()
 export class FilmService {
     constructor(
         @Inject(FILM_REPOSITORY)
