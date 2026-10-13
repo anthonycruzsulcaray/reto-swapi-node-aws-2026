@@ -3,15 +3,15 @@ import { FilmBodySpanish, FilmBodyEnglish } from "../../domain/entities/film.ent
 import { FILM_REPOSITORY } from "../../domain/repository/film.repository";
 import type { FilmRepository } from "../../domain/repository/film.repository";
 import { TranslateObject } from "../../infrastructure/utils/translateObject";
-//import FilmsValidator from "../../infrastructure/validator/filmsValidation";
+import {FilmValidator} from "../../infrastructure/validator/filmsValidation";
 
 @Injectable()
 export class FilmService {
     constructor(
         @Inject(FILM_REPOSITORY)
         private readonly filmRepository: FilmRepository,
-        private readonly translate: TranslateObject
-        // private readonly validator: FilmsValidator
+        private readonly translate: TranslateObject,
+        private readonly validator: FilmValidator
     ) { }
 
     async getListFilms(): Promise<FilmBodySpanish[]> {
@@ -35,7 +35,7 @@ export class FilmService {
     }
 
     async createFilm(bodyFilm: FilmBodyEnglish): Promise<FilmBodySpanish | null> {
-        // this.validator.validate(bodyFilm)
+        this.validator.validateEnglish(bodyFilm)
         bodyFilm.created = new Date().toDateString()
 
         const totalFilms = (await this.filmRepository.getListFilms()).length ?? 0
