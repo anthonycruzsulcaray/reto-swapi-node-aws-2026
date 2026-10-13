@@ -12,10 +12,12 @@ import { ConfigModule } from '@nestjs/config';
 import { FILM_REPOSITORY } from '../domain/repository/film.repository';
 import { DynamoDbModule } from './database/dynamo.database';
 
-
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }),
-    HttpModule, DynamoDbModule],
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+    HttpModule,
+    DynamoDbModule,
+  ],
   controllers: [StarwarsController],
   providers: [
     StarwarsService,
@@ -28,9 +30,7 @@ import { DynamoDbModule } from './database/dynamo.database';
       provide: FILM_REPOSITORY,
       useClass: DynamoRepository,
     },
-
-    TranslateObject, 
-    // FilmsValidator
+    TranslateObject,
   ],
 })
-export class StarwarsModule { }
+export class StarwarsModule {}

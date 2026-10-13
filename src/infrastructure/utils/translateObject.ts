@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-@Injectable()
 
+@Injectable()
 export class TranslateObject {
 
     filmsToSpanish(dynamoId: number, film: any) {
