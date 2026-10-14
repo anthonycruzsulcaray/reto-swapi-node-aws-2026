@@ -1,9 +1,8 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
-import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
+import { Injectable, Logger } from '@nestjs/common';
 import { GetCommand, PutCommand, ScanCommand } from '@aws-sdk/lib-dynamodb';
 import { FilmRepository } from '../../domain/repository/film.repository';
 import { FilmBodyEnglish } from '../../domain/entities/film.entities';
-import { DYNAMODB_CLIENT } from '../database/dynamo.database';
+import { DynamoClientDatabase } from '../database/dynamo.client';
 
 interface FilmRecord {
     id: number;
@@ -13,16 +12,12 @@ interface FilmRecord {
 @Injectable()
 export class DynamoRepository implements FilmRepository {
     private readonly logger = new Logger(DynamoRepository.name); // Instancia del logger
-
-    constructor(
-        @Inject(DYNAMODB_CLIENT)
-        private readonly dynamoConn: DynamoDBDocumentClient,
-    ) { }
+    constructor(private readonly dynamoDatabase: DynamoClientDatabase) { }
 
     async getListFilms(): Promise<FilmBodyEnglish[]> {
         try {
             const responseItems: FilmBodyEnglish[] = [];
-            const result = await this.dynamoConn.send(
+            const result = await this.dynamoDatabase.client.send(
                 new ScanCommand({
                     TableName: process.env.DYNAMO_DB_TABLE,
                 }),
@@ -44,7 +39,7 @@ export class DynamoRepository implements FilmRepository {
     async getFilmById(id: number): Promise<FilmBodyEnglish | null> {
         try {
             let responseItems = new FilmBodyEnglish()
-            const result = await this.dynamoConn.send(
+            const result = await this.dynamoDatabase.client.send(
                 new GetCommand({
                     TableName: process.env.DYNAMO_DB_TABLE,
                     Key: { id },
@@ -61,9 +56,10 @@ export class DynamoRepository implements FilmRepository {
             throw new Error('No se pudo obtener el elemento por ID');
         }
     }
+
     async createFilm(film: FilmBodyEnglish): Promise<FilmBodyEnglish | null> {
         try {
-            await this.dynamoConn.send(
+            await this.dynamoDatabase.client.send(
                 new PutCommand({
                     TableName: process.env.DYNAMO_DB_TABLE,
                     Item: {

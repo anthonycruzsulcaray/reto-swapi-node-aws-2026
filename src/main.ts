@@ -1,5 +1,5 @@
 import { NestFactory } from '@nestjs/core';
-import { StarwarsModule } from './infrastructure/starwars.module';
+import { StarwarsModule } from './starwars.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(StarwarsModule,{cors: true});

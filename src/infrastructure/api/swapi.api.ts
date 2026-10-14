@@ -9,7 +9,6 @@ import { FilmBodyPagedEnglish, FilmBodyEnglish } from "../../domain/entities/fil
 export class StarwarsApiRest implements StarwarsRepository {
       constructor(private readonly httpService: HttpService) {}
 
-    // nestjs/axios - Libreria para consumir la API de Star Wars
     async getListStarwars(): Promise<FilmBodyPagedEnglish> {
         const url = `${process.env.API_URL_BASE}films`;
         const { data } = await firstValueFrom(

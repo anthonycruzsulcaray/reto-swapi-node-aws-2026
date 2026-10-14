@@ -1,7 +1,6 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { FilmBodySpanish, FilmBodyEnglish } from "../../domain/entities/film.entities";
-import { FILM_REPOSITORY } from "../../domain/repository/film.repository";
-import type { FilmRepository } from "../../domain/repository/film.repository";
+import { FilmRepository, FILM_REPOSITORY } from "../../domain/repository/film.repository";
 import { filmToSpanish } from "../mapper/film.mapper";
 import { validateEnglishFilm } from "../validation/film.validator";
 
