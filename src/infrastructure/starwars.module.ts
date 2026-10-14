@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
-import { StarwarsController } from './controller/starwars.controller';
+import { StarwarsController } from '../presentation/controller/starwars.controller';
 import { HttpModule } from '@nestjs/axios';
-import { TranslateObject } from './utils/translateObject';
 import { DynamoRepository } from './repository/dynamo.repository';
 import { FilmService } from '../application/service/film.service';
 import { StarwarsApiRest } from './api/swapi.api';
@@ -10,7 +9,6 @@ import { STARWARS_REPOSITORY } from '../domain/repository/starwars.repository';
 import { ConfigModule } from '@nestjs/config';
 import { FILM_REPOSITORY } from '../domain/repository/film.repository';
 import { DynamoDbModule } from './database/dynamo.database';
-import { FilmValidator } from './validator/filmsValidation';
 
 @Module({
   imports: [
@@ -30,8 +28,6 @@ import { FilmValidator } from './validator/filmsValidation';
       provide: FILM_REPOSITORY,
       useClass: DynamoRepository,
     },
-    TranslateObject,
-    FilmValidator
   ],
 })
 export class StarwarsModule {}
