@@ -30,4 +30,4 @@ import { DynamoClientDatabase } from './infrastructure/database/dynamo.client';
     },
   ],
 })
-export class StarwarsModule {}
+export class AppModule {}

@@ -8,7 +8,7 @@
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start": "nest start",
+    "start": "sls offline start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
@@ -16,7 +16,9 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
-    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand"
+    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
+    "deploy": "serverless deploy"
+
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.1147.0",
@@ -72,7 +74,7 @@
     "collectCoverageFrom": [
       "src/**/*.ts",
       "!src/main.ts",
-      "!src/starwars.module.ts",
+      "!src/app.module.ts",
       "!src/infrastructure/database/dynamo.client.ts"
     ],
     "coverageDirectory": "coverage",
