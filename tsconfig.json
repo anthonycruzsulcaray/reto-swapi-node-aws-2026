@@ -4,7 +4,7 @@
     "moduleResolution": "nodenext",
     "resolvePackageJsonExports": true,
     "esModuleInterop": true,
-    // "isolatedModules": true, // Opcion para transpilar el codigo
+    "isolatedModules": true, // Opcion para transpilar el codigo
     "declaration": true,
     "removeComments": true,
     "emitDecoratorMetadata": true,
@@ -21,6 +21,6 @@
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
     "strictPropertyInitialization": false, // No se requiere inicializar las propiedades en el constructor
-    "types": ["node"] // jest - test / pruebas unitarias
+    "types": ["node", "jest"] // jest - test / pruebas unitarias
   }
 }

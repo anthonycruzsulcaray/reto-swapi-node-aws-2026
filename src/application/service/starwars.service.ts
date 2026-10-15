@@ -1,6 +1,7 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { FilmBodyEnglish, FilmBodyPagedEnglish } from "../../domain/entities/film.entities";
-import { StarwarsRepository, STARWARS_REPOSITORY } from "../../domain/repository/starwars.repository";
+import { STARWARS_REPOSITORY } from "../../domain/repository/starwars.repository";
+import type { StarwarsRepository } from "../../domain/repository/starwars.repository";
 
 @Injectable()
 export class StarwarsService {
