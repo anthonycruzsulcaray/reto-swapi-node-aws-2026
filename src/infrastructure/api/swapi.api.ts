@@ -1,12 +1,19 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, Observable } from 'rxjs';
 import { StarwarsRepository } from "../../domain/repository/starwars.repository";
 import { FilmBodyPagedEnglish, FilmBodyEnglish } from "../../domain/entities/film.entities";
 
+interface StarwarsHttpClient {
+    get<T>(url: string): Observable<{ data: T }>;
+}
+
 @Injectable()
 export class StarwarsApiRest implements StarwarsRepository {
-      constructor(private readonly httpService: HttpService) {}
+    constructor(
+        @Inject(HttpService)
+        private readonly httpService: StarwarsHttpClient,
+    ) { }
 
     async getListStarwars(): Promise<FilmBodyPagedEnglish> {
         const url = `${process.env.API_URL_BASE}films`;

@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { GetCommand, PutCommand, ScanCommand } from '@aws-sdk/lib-dynamodb';
 import { FilmRepository } from '../../domain/repository/film.repository';
 import { FilmBodyEnglish } from '../../domain/entities/film.entities';
@@ -9,10 +9,19 @@ interface FilmRecord {
     data: FilmBodyEnglish;
 }
 
+interface DynamoDatabase {
+    client: {
+        send(command: ScanCommand | GetCommand | PutCommand): Promise<any>;
+    };
+}
+
 @Injectable()
 export class DynamoRepository implements FilmRepository {
     private readonly logger = new Logger(DynamoRepository.name); // Instancia del logger
-    constructor(private readonly dynamoDatabase: DynamoClientDatabase) { }
+    constructor(
+        @Inject(DynamoClientDatabase)
+        private readonly dynamoDatabase: DynamoDatabase,
+    ) { }
 
     async getListFilms(): Promise<FilmBodyEnglish[]> {
         try {
