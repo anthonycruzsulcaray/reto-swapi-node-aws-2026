@@ -2,8 +2,12 @@ name: reto-swapi-node-aws-2026 - SonarQube Cloud
 
 on:
   push:
+    branches:
+      - develop
+      - release
+      - master
   pull_request:
-
+  #types: [opened, synchronize, reopened]
 jobs:
   analyze:
     name: Analyze
