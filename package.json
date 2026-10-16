@@ -69,10 +69,17 @@
     ],
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
-      "^.+\\.(t|j)s$": "ts-jest"
+      "^.+\\.(t|j)s$": [
+        "ts-jest",
+        {
+          "tsconfig": {
+            "emitDecoratorMetadata": false
+          }
+        }
+      ]
     },
     "collectCoverageFrom": [
-      "src/**/*.ts",
+      "src/**/*.(t|j)s",
       "!src/main.ts",
       "!src/app.module.ts",
       "!src/infrastructure/database/dynamo.client.ts"

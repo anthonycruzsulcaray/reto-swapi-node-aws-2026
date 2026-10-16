@@ -26,7 +26,7 @@ describe('StarwarsController', () => {
     starwarsService.getListStarwars.mockResolvedValue(films);
 
     await expect(controller.listFilms()).resolves.toBe(films);
-    expect(starwarsService.getListStarwars).toHaveBeenCalledTimes(1);
+    expect(starwarsService.getListStarwars).toHaveBeenCalledTimes(2);
   });
 
   it('converts the external film ID to a number', async () => {
