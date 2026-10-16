@@ -57,6 +57,14 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
+## SonarQube Cloud
+
+The GitHub Actions workflow runs the tests with coverage before starting the
+SonarQube Cloud scan. Add a repository secret named `SONAR_TOKEN` containing
+your SonarQube Cloud token. If automatic analysis is enabled for the project,
+disable it under **Administration > Analysis Method** so the CI-based workflow
+can upload the coverage report.
+
 ## Deployment
 
 When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
