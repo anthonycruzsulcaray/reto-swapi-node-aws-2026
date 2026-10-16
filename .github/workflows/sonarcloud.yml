@@ -1,4 +1,4 @@
-name: reto-swapi-node-aws-2026 - SonarQube Cloud
+name: reto-swapi-node-aws
 
 on:
   push:
@@ -7,13 +7,14 @@ on:
       - release
       - master
   pull_request:
-  #types: [opened, synchronize, reopened]
+    types: [opened, synchronize, reopened]
+
 jobs:
-  analyze:
-    name: Analyze
+  sonarqube:
+    name: Tests and SonarQube
     runs-on: ubuntu-latest
     steps:
-      - name: Check out repository
+      - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -26,10 +27,13 @@ jobs:
       - name: Install dependencies
         run: npm install --no-audit --no-fund
 
+      - name: Run build
+        run: npm run build
+
       - name: Run tests and generate coverage
         run: npm run test:cov -- --runInBand
 
-      - name: Analyze with SonarQube Cloud
+      - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v7
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
