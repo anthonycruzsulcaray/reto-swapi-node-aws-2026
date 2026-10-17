@@ -34,13 +34,16 @@ $ npm install
 ## Compile and run the project
 
 ```bash
+# build the application with webpack
+$ npm run build
+
 # development
 $ npm run start
 
 # watch mode
 $ npm run start:dev
 
-# production mode
+# run the webpack bundle in production
 $ npm run start:prod
 ```
 
@@ -67,16 +70,20 @@ can upload the coverage report.
 
 ## Deployment
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+The Serverless Framework v3 bundles the Lambda handler with webpack and deploys
+it as an AWS HTTP API. Configure AWS credentials using the standard AWS
+credential provider chain, then deploy with:
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+npm run deploy -- --stage dev --region us-west-1
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+The deployment creates a pay-per-request DynamoDB table named by
+`DYNAMO_DB_TABLE` in `.env` (currently `STARTWARS_DYNAMO`) and grants the Lambda
+function access to that table. The API is available at the HTTP API URL printed
+after deployment. To remove a test deployment and its table at the end of the
+day, run `npx serverless remove --stage dev --region us-west-1`. Removing the
+deployment deletes its DynamoDB table and all data stored in it.
 
 ## Resources
 

@@ -1,0 +1,85 @@
+service: reto-swapi-node-aws-2026
+frameworkVersion: '3'
+
+plugins:
+  - serverless-webpack
+  - serverless-offline
+
+useDotenv: true
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: ${opt:region, 'us-west-1'}
+  stage: ${opt:stage, 'prod'}
+  environment:
+    API_URL_BASE: ${env:API_URL_BASE}
+    DYNAMO_DB_TABLE: !Ref FilmsTable
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:Scan
+          Resource: !GetAtt FilmsTable.Arn
+
+package:
+  patterns:
+    - '!node_modules/**'
+    - 'package.json'
+  individually: true
+
+resources:
+  Resources:
+    FilmsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${env:DYNAMO_DB_TABLE}
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: N
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+
+custom:
+  stage: ${opt:stage, self:provider.stage}
+  dotenv:
+    enabled: true
+    path: .env
+  webpack:
+    webpackConfig: ./webpack.config.js
+    includeModules: true
+  
+functions:
+  api:
+    handler: src/serverlessDeploy/http/lambda.handler
+    timeout: 30
+    events:
+      - http:
+          path: /starwars/films
+          method: GET
+          cors:
+            origin: '*'
+      - http:
+          path: /starwars/films/{id}
+          method: GET
+          cors:
+            origin: '*' 
+      - http:
+          path: /starwars/dynamo/films
+          method: GET
+          cors:
+            origin: '*'   
+      - http:
+          path: /starwars/dynamo/films/{id}
+          method: GET
+          cors:
+            origin: '*'
+      - http:
+          path: /starwars/dynamo/films
+          method: POST
+          cors:
+            origin: '*'
