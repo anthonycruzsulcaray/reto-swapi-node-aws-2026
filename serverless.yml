@@ -1,5 +1,8 @@
 service: reto-swapi-node-aws-2026
-frameworkVersion: '3'
+frameworkVersion: '4'
+
+build:
+  esbuild: false
 
 plugins:
   - serverless-webpack
@@ -8,12 +11,12 @@ plugins:
 useDotenv: true
 provider:
   name: aws
-  runtime: nodejs20.x
+  runtime: nodejs24.x
   region: ${opt:region, 'us-west-1'}
   stage: ${opt:stage, 'prod'}
   environment:
     API_URL_BASE: ${env:API_URL_BASE}
-    DYNAMO_DB_TABLE: !Ref FilmsTable
+    DYNAMO_DB_TABLE: ${env:DYNAMO_DB_TABLE}
   iam:
     role:
       statements:
@@ -22,27 +25,13 @@ provider:
             - dynamodb:GetItem
             - dynamodb:PutItem
             - dynamodb:Scan
-          Resource: !GetAtt FilmsTable.Arn
+          Resource: '*'
 
 package:
   patterns:
     - '!node_modules/**'
     - 'package.json'
   individually: true
-
-resources:
-  Resources:
-    FilmsTable:
-      Type: AWS::DynamoDB::Table
-      Properties:
-        TableName: ${env:DYNAMO_DB_TABLE}
-        BillingMode: PAY_PER_REQUEST
-        AttributeDefinitions:
-          - AttributeName: id
-            AttributeType: N
-        KeySchema:
-          - AttributeName: id
-            KeyType: HASH
 
 custom:
   stage: ${opt:stage, self:provider.stage}

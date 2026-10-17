@@ -70,7 +70,7 @@ can upload the coverage report.
 
 ## Deployment
 
-The Serverless Framework v3 bundles the Lambda handler with webpack and deploys
+The Serverless Framework v4 bundles the Lambda handler with webpack and deploys
 it as an AWS HTTP API. Configure AWS credentials using the standard AWS
 credential provider chain, then deploy with:
 
@@ -78,12 +78,14 @@ credential provider chain, then deploy with:
 npm run deploy -- --stage dev --region us-west-1
 ```
 
-The deployment creates a pay-per-request DynamoDB table named by
-`DYNAMO_DB_TABLE` in `.env` (currently `STARTWARS_DYNAMO`) and grants the Lambda
-function access to that table. The API is available at the HTTP API URL printed
-after deployment. To remove a test deployment and its table at the end of the
-day, run `npx serverless remove --stage dev --region us-west-1`. Removing the
-deployment deletes its DynamoDB table and all data stored in it.
+Create the DynamoDB table manually before deploying. Its name must match
+`DYNAMO_DB_TABLE` in `.env` (currently `STARTWARS_DYNAMO`), and it must be in the
+same AWS account and region as the deployment, with a numeric `id` partition
+key. The deployment does not create or delete the table; it grants the Lambda
+function `GetItem`, `PutItem`, and `Scan` access to its ARN. The API is available
+at the HTTP API URL printed after deployment. To remove a test deployment, run
+`npx serverless remove --stage dev --region us-west-1`. This removes the
+Serverless stack but leaves the manually managed table intact.
 
 ## Resources
 
