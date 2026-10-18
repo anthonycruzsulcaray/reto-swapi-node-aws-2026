@@ -1,11 +1,7 @@
 service: reto-swapi-node-aws-2026
 frameworkVersion: '4'
 
-build:
-  esbuild: false
-
 plugins:
-  - serverless-webpack
   - serverless-offline
 
 useDotenv: true
@@ -27,24 +23,15 @@ provider:
             - dynamodb:Scan
           Resource: '*'
 
-package:
-  patterns:
-    - '!node_modules/**'
-    - 'package.json'
-  individually: true
-
 custom:
   stage: ${opt:stage, self:provider.stage}
   dotenv:
     enabled: true
     path: .env
-  webpack:
-    webpackConfig: ./webpack.config.js
-    includeModules: true
   
 functions:
   api:
-    handler: src/serverlessDeploy/http/lambda.handler
+    handler: dist/serverlessDeploy/http/lambda.handler
     timeout: 30
     events:
       - http:

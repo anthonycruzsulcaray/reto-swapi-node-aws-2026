@@ -34,7 +34,7 @@ $ npm install
 ## Compile and run the project
 
 ```bash
-# build the application with webpack
+# build the application with TypeScript
 $ npm run build
 
 # development
@@ -43,7 +43,7 @@ $ npm run start
 # watch mode
 $ npm run start:dev
 
-# run the webpack bundle in production
+# run the compiled application in production
 $ npm run start:prod
 ```
 
@@ -70,9 +70,11 @@ can upload the coverage report.
 
 ## Deployment
 
-The Serverless Framework v4 bundles the Lambda handler with webpack and deploys
-it as an AWS HTTP API. Configure AWS credentials using the standard AWS
-credential provider chain, then deploy with:
+The project compiles the Lambda handler with the Nest CLI/TypeScript compiler
+before Serverless packages and deploys the `dist` output with its runtime
+dependencies as an AWS HTTP API. The `start` and `deploy` scripts build first.
+Configure AWS credentials using the standard AWS credential provider chain,
+then deploy with:
 
 ```bash
 npm run deploy -- --stage dev --region us-west-1
