@@ -34,13 +34,16 @@ $ npm install
 ## Compile and run the project
 
 ```bash
+# build the application with TypeScript
+$ npm run build
+
 # development
 $ npm run start
 
 # watch mode
 $ npm run start:dev
 
-# production mode
+# run the compiled application in production
 $ npm run start:prod
 ```
 
@@ -67,16 +70,24 @@ can upload the coverage report.
 
 ## Deployment
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+The project compiles the Lambda handler with the Nest CLI/TypeScript compiler
+before Serverless packages and deploys the `dist` output with its runtime
+dependencies as an AWS HTTP API. The `start` and `deploy` scripts build first.
+Configure AWS credentials using the standard AWS credential provider chain,
+then deploy with:
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+npm run deploy -- --stage dev --region us-west-1
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+Create the DynamoDB table manually before deploying. Its name must match
+`DYNAMO_DB_TABLE` in `.env` (currently `STARTWARS_DYNAMO`), and it must be in the
+same AWS account and region as the deployment, with a numeric `id` partition
+key. The deployment does not create or delete the table; it grants the Lambda
+function `GetItem`, `PutItem`, and `Scan` access to its ARN. The API is available
+at the HTTP API URL printed after deployment. To remove a test deployment, run
+`npx serverless remove --stage dev --region us-west-1`. This removes the
+Serverless stack but leaves the manually managed table intact.
 
 ## Resources
 

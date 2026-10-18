@@ -8,7 +8,7 @@
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start": "nest start",
+    "start": "npm run build && sls offline start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
@@ -17,12 +17,12 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "deploy": "serverless deploy"
-
+    "deploy": "npm run build && serverless deploy"
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.1147.0",
     "@aws-sdk/lib-dynamodb": "^3.1147.0",
+    "@codegenie/serverless-express": "^5.0.0",
     "@nestjs/axios": "^12.0.1",
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^12.0.1",
@@ -47,10 +47,11 @@
     "globals": "^17.0.0",
     "jest": "^30.5.2",
     "prettier": "^3.4.2",
+    "serverless": "^4.0.0",
+    "serverless-offline": "^14.8.3",
     "source-map-support": "^0.5.21",
     "supertest": "^7.0.0",
     "ts-jest": "^29.1.2",
-    "ts-loader": "^9.5.2",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.7.3",
@@ -68,6 +69,10 @@
       "<rootDir>/src"
     ],
     "testRegex": ".*\\.spec\\.ts$",
+    "testPathIgnorePatterns": [
+      "<rootDir>/node_modules/",
+      "<rootDir>/src/serverlessDeploy/"
+    ],
     "transform": {
       "^.+\\.(t|j)s$": [
         "ts-jest",
@@ -82,7 +87,8 @@
       "src/**/*.(t|j)s",
       "!src/main.ts",
       "!src/app.module.ts",
-      "!src/infrastructure/database/dynamo.client.ts"
+      "!src/infrastructure/database/dynamo.client.ts",
+      "!src/serverlessDeploy/**"
     ],
     "coverageDirectory": "coverage",
     "testEnvironment": "node"

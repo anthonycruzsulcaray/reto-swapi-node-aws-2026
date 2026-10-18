@@ -7,13 +7,8 @@ export class DynamoClientDatabase {
   readonly client: DynamoDBDocumentClient;
 
   constructor() {
-    const { AWS_REGION, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY } = process.env;
     const client = new DynamoDBClient({
-      region: AWS_REGION,
-      credentials: {
-        accessKeyId: AWS_ACCESS_KEY_ID ?? '',
-        secretAccessKey: AWS_SECRET_ACCESS_KEY ?? '',
-      },
+      region: process.env.AWS_REGION,
     });
 
     this.client = DynamoDBDocumentClient.from(client);

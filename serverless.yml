@@ -1,0 +1,62 @@
+service: reto-swapi-node-aws-2026
+frameworkVersion: '4'
+
+plugins:
+  - serverless-offline
+
+useDotenv: true
+provider:
+  name: aws
+  runtime: nodejs24.x
+  region: ${opt:region, 'us-west-1'}
+  stage: ${opt:stage, 'prod'}
+  environment:
+    API_URL_BASE: ${env:API_URL_BASE}
+    DYNAMO_DB_TABLE: ${env:DYNAMO_DB_TABLE}
+    NODE_OPTIONS: --experimental-require-module
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:Scan
+          Resource: '*'
+
+custom:
+  stage: ${opt:stage, self:provider.stage}
+  dotenv:
+    enabled: true
+    path: .env
+  
+functions:
+  api:
+    handler: dist/serverlessDeploy/http/lambda.handler
+    timeout: 30
+    events:
+      - http:
+          path: /starwars/films
+          method: GET
+          cors:
+            origin: '*'
+      - http:
+          path: /starwars/films/{id}
+          method: GET
+          cors:
+            origin: '*' 
+      - http:
+          path: /starwars/dynamo/films
+          method: GET
+          cors:
+            origin: '*'   
+      - http:
+          path: /starwars/dynamo/films/{id}
+          method: GET
+          cors:
+            origin: '*'
+      - http:
+          path: /starwars/dynamo/films
+          method: POST
+          cors:
+            origin: '*'
