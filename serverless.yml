@@ -13,6 +13,7 @@ provider:
   environment:
     API_URL_BASE: ${env:API_URL_BASE}
     DYNAMO_DB_TABLE: ${env:DYNAMO_DB_TABLE}
+    NODE_OPTIONS: --experimental-require-module
   iam:
     role:
       statements:
