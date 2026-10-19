@@ -1,0 +1,194 @@
+schemas:
+  FilmBodyPagedEnglish:
+    type: object
+    required:
+      - count
+      - next
+      - previous
+      - results
+    properties:
+      count:
+        type: integer
+      next:
+        type: string
+        nullable: true
+      previous:
+        type: string
+        nullable: true
+      results:
+        type: array
+        items:
+          $ref: "#/schemas/FilmBodyEnglish"
+  FilmBodyEnglish:
+    type: object
+    required:
+      - id
+      - episode_id
+      - title
+      - opening_crawl
+      - director
+      - producer
+      - release_date
+      - characters
+      - planets
+      - starships
+      - vehicles
+      - species
+      - created
+      - edited
+      - url
+    properties:
+      id:
+        type: integer
+      episode_id:
+        type: integer
+      title:
+        type: string
+      opening_crawl:
+        type: string
+      director:
+        type: string
+      producer:
+        type: string
+      release_date:
+        type: string
+      characters:
+        type: array
+        items:
+          type: string
+      planets:
+        type: array
+        items:
+          type: string
+      starships:
+        type: array
+        items:
+          type: string
+      vehicles:
+        type: array
+        items:
+          type: string
+      species:
+        type: array
+        items:
+          type: string
+      created:
+        type: string
+      edited:
+        type: string
+      url:
+        type: string
+  CreateFilmRequest:
+    type: object
+    required:
+      - title
+      - opening_crawl
+      - director
+      - producer
+      - release_date
+      - characters
+      - planets
+      - starships
+      - vehicles
+      - species
+    properties:
+      id:
+        type: integer
+        description: "No es necesario enviarlo; la API genera el ID al crear la pelicula."
+      episode_id:
+        type: integer
+      title:
+        type: string
+      opening_crawl:
+        type: string
+      director:
+        type: string
+      producer:
+        type: string
+      release_date:
+        type: string
+      characters:
+        type: array
+        items:
+          type: string
+      planets:
+        type: array
+        items:
+          type: string
+      starships:
+        type: array
+        items:
+          type: string
+      vehicles:
+        type: array
+        items:
+          type: string
+      species:
+        type: array
+        items:
+          type: string
+      created:
+        type: string
+      edited:
+        type: string
+      url:
+        type: string
+  FilmBodySpanish:
+    type: object
+    required:
+      - id
+      - episodio_id
+      - titulo
+      - rastreo_apertura
+      - director
+      - productor
+      - fecha_lanzamiento
+      - caracteres
+      - planetas
+      - naves_estelares
+      - vehiculos
+      - especies
+      - creado
+      - editado
+      - url
+    properties:
+      id:
+        type: integer
+      episodio_id:
+        type: integer
+      titulo:
+        type: string
+      rastreo_apertura:
+        type: string
+      director:
+        type: string
+      productor:
+        type: string
+      fecha_lanzamiento:
+        type: string
+      caracteres:
+        type: array
+        items:
+          type: string
+      planetas:
+        type: array
+        items:
+          type: string
+      naves_estelares:
+        type: array
+        items:
+          type: string
+      vehiculos:
+        type: array
+        items:
+          type: string
+      especies:
+        type: array
+        items:
+          type: string
+      creado:
+        type: string
+      editado:
+        type: string
+      url:
+        type: string

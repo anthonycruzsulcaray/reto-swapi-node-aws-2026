@@ -8,7 +8,7 @@ useDotenv: true
 provider:
   name: aws
   runtime: nodejs24.x
-  region: ${opt:region, 'us-west-1'}
+  region: 'us-west-1'
   stage: ${opt:stage, 'prod'}
   environment:
     API_URL_BASE: ${env:API_URL_BASE}
