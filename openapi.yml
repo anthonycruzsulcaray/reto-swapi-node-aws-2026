@@ -1,0 +1,103 @@
+openapi: "3.0.1"
+info:
+  title: "Reto starwars-node-aws"
+  description: "API para consultar peliculas de Star Wars y administrar peliculas en DynamoDB."
+  version: "1.0.0"
+servers:
+  - url: "https://bn4pshew21.execute-api.us-west-1.amazonaws.com/{basePath}"
+    variables:
+      basePath:
+        default: "prod"
+paths:
+  /starwars/films:
+    get:
+      operationId: listStarwarsFilms
+      summary: "Listar peliculas de Star Wars desde SWAPI"
+      tags:
+        - "Star Wars"
+      responses:
+        "200":
+          description: "Lista paginada de peliculas en ingles."
+          content:
+            application/json:
+              schema:
+                $ref: "./openapi-components.yml#/schemas/FilmBodyPagedEnglish"
+  /starwars/films/{id}:
+    get:
+      operationId: getStarwarsFilmById
+      summary: "Obtener una pelicula de SWAPI por ID"
+      tags:
+        - "Star Wars"
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: "Identificador numerico de la pelicula."
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: "Pelicula encontrada, o null si no existe."
+          content:
+            application/json:
+              schema:
+                type: object
+                nullable: true
+                allOf:
+                  - $ref: "./openapi-components.yml#/schemas/FilmBodyEnglish"
+  /starwars/dynamo/films:
+    get:
+      operationId: listDynamoFilms
+      summary: "Listar peliculas almacenadas en DynamoDB"
+      tags:
+        - "DynamoDB"
+      responses:
+        "200":
+          description: "Lista de peliculas en espanol."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "./openapi-components.yml#/schemas/FilmBodySpanish"
+    post:
+      operationId: createDynamoFilm
+      summary: "Crear una pelicula en DynamoDB"
+      tags:
+        - "DynamoDB"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./openapi-components.yml#/schemas/CreateFilmRequest"
+      responses:
+        "201":
+          description: "Pelicula creada y devuelta en espanol."
+          content:
+            application/json:
+              schema:
+                $ref: "./openapi-components.yml#/schemas/FilmBodySpanish"
+  /starwars/dynamo/films/{id}:
+    get:
+      operationId: getDynamoFilmById
+      summary: "Obtener una pelicula de DynamoDB por ID"
+      tags:
+        - "DynamoDB"
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: "Identificador numerico de la pelicula."
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: "Pelicula encontrada, o null si no existe."
+          content:
+            application/json:
+              schema:
+                type: object
+                nullable: true
+                allOf:
+                  - $ref: "./openapi-components.yml#/schemas/FilmBodySpanish"
