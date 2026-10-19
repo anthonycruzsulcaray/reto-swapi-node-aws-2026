@@ -48,15 +48,15 @@ el mapeador para responder en espanol.
 
 ## 🚀 Rutas disponibles
 
-La base de las rutas es `/starwars`.
+La base de las rutas es `/starwars` , pero en el serverless.yml apunta a produccion`/prod`.
 
 | Metodo | Ruta | Descripcion |
 | --- | --- | --- |
-| `GET` | `/starwars/films` | Lista paginada de peliculas de SWAPI (respuesta en ingles). |
-| `GET` | `/starwars/films/{id}` | Consulta una pelicula de SWAPI por ID. |
-| `GET` | `/starwars/dynamo/films` | Lista las peliculas guardadas en DynamoDB (respuesta en espanol). |
-| `GET` | `/starwars/dynamo/films/{id}` | Consulta una pelicula de DynamoDB por ID (respuesta en espanol). |
-| `POST` | `/starwars/dynamo/films` | Crea una pelicula en DynamoDB enviando sus datos en ingles; responde en espanol con estado `201`. |
+| `GET` | `/prod/starwars/films` | Lista paginada de peliculas de SWAPI (respuesta en ingles). |
+| `GET` | `/prod/starwars/films/{id}` | Consulta una pelicula de SWAPI por ID. |
+| `GET` | `/prod/starwars/dynamo/films` | Lista las peliculas guardadas en DynamoDB (respuesta en espanol). |
+| `GET` | `/prod/starwars/dynamo/films/{id}` | Consulta una pelicula de DynamoDB por ID (respuesta en espanol). |
+| `POST` | `/prod/starwars/dynamo/films` | Crea una pelicula en DynamoDB enviando sus datos en ingles; responde en espanol con estado `201`. |
 
 La especificacion OpenAPI se encuentra en [`openapi.yml`](./openapi.yml). Sus
 esquemas se mantienen aparte en [`openapi-components.yml`](./openapi-components.yml).
@@ -92,11 +92,16 @@ al crear la pelicula y devuelve el resultado con campos en espanol.
 - Node.js **24** y npm.
 - Una tabla de DynamoDB creada previamente.
 - Credenciales de AWS disponibles localmente o en el entorno donde se despliegue.
+- Su cuenta IAM debe tener permisos como S3, IAM, LAMBDA, APIGATEWAY, etc.
 
-Instala las dependencias:
+Instala las dependencias de 2 formas:
 
 ```bash
 npm install
+```
+ó
+```bash
+npm i --force
 ```
 
 Configura las variables necesarias en un archivo `.env` en la raiz del proyecto:
@@ -130,20 +135,20 @@ npm start
 ```
 
 El servidor local queda disponible normalmente en `http://localhost:3000`.
-Por ejemplo, puedes consultar `http://localhost:3000/starwars/films`.
+Por ejemplo, puedes consultar `http://localhost:3000/prod/starwars/films`.
 Las rutas de DynamoDB requieren que la tabla configurada sea accesible desde tu
 entorno.
 
 Ejecutar las pruebas unitarias:
 
 ```bash
-npm test -- --runInBand
+npm test
 ```
 
 Generar el reporte de cobertura:
 
 ```bash
-npm run test:cov -- --runInBand
+npm run test:cov
 ```
 
 ## ☁️ Despliegue en AWS
@@ -158,14 +163,14 @@ Configura las credenciales de AWS, las variables de entorno requeridas y el
 nombre de la tabla. Despues ejecuta:
 
 ```bash
-npm run deploy -- --stage dev --region us-west-1
+npm run deploy
 ```
 
 Al finalizar, Serverless muestra la URL de la API desplegada. Para eliminar el
 stack de prueba (la tabla creada manualmente no se elimina), ejecuta:
 
 ```bash
-npx serverless remove --stage dev --region us-west-1
+serverless remove
 ```
 
 ## 📊 Calidad continua
