@@ -1,117 +1,181 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# 🌌 Star Wars Films API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+API REST desarrollada con **NestJS** para consultar peliculas de Star Wars desde
+[SWAPI](https://swapi.dev/) y administrar una coleccion propia de peliculas en
+**Amazon DynamoDB**. La aplicacion esta organizada en capas, se ejecuta como
+funcion **AWS Lambda** y cuenta con pruebas unitarias y analisis automatizado
+con **SonarQube Cloud**.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## ✨ ¿Que puedes hacer?
 
-## Description
+- Consultar la lista paginada de peliculas de SWAPI y buscar una pelicula por ID.
+- Listar, buscar y crear peliculas guardadas en DynamoDB.
+- Recibir las peliculas de SWAPI con sus campos en ingles y las peliculas de
+  DynamoDB con los campos traducidos al espanol.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## 🧰 Tecnologias
 
-## Project setup
+| Tecnologia | Uso |
+| --- | --- |
+| [NestJS](https://nestjs.com/) y TypeScript | Construccion de la API REST y organizacion de la aplicacion en modulos. |
+| Arquitectura limpia por capas y conceptos de DDD | Separacion entre presentacion, aplicacion, dominio e infraestructura. |
+| [SWAPI](https://swapi.dev/) | Fuente externa para consultar peliculas de Star Wars. |
+| [Amazon DynamoDB](https://aws.amazon.com/dynamodb/) | Base de datos NoSQL para las peliculas creadas por la API. |
+| AWS Lambda y Serverless Framework | Despliegue y ejecucion de la API sin administrar servidores. |
+| Jest | Pruebas unitarias de servicios, validaciones, mapeadores, repositorios y controlador. |
+| SonarQube Cloud y GitHub Actions | Ejecucion automatica de build, pruebas con cobertura y analisis de calidad. |
 
-```bash
-$ npm install
+## 🏛️ Como esta organizada
+
+El codigo de `src/` esta dividido en capas para mantener cada responsabilidad
+separada:
+
+- **Presentacion** (`src/presentation/`): controlador NestJS que recibe las
+  solicitudes HTTP y las deriva a los servicios.
+- **Aplicacion** (`src/application/`): servicios con los casos de uso, validacion
+  de peliculas nuevas y transformacion de datos entre ingles y espanol.
+- **Dominio** (`src/domain/`): contratos de repositorios y modelos de peliculas,
+  independientes de SWAPI, DynamoDB y HTTP.
+- **Infraestructura** (`src/infrastructure/`): integraciones concretas con la
+  API externa y con DynamoDB.
+- **Ejecucion serverless** (`src/serverlessDeploy/`): modulo NestJS y handler que
+  adapta las solicitudes de API Gateway para AWS Lambda.
+
+En una consulta de SWAPI, el controlador invoca el servicio de Star Wars, que
+usa el contrato del repositorio implementado por el adaptador HTTP. Para las
+peliculas propias, el servicio de peliculas usa el repositorio de DynamoDB y
+el mapeador para responder en espanol.
+
+## 🚀 Rutas disponibles
+
+La base de las rutas es `/starwars`.
+
+| Metodo | Ruta | Descripcion |
+| --- | --- | --- |
+| `GET` | `/starwars/films` | Lista paginada de peliculas de SWAPI (respuesta en ingles). |
+| `GET` | `/starwars/films/{id}` | Consulta una pelicula de SWAPI por ID. |
+| `GET` | `/starwars/dynamo/films` | Lista las peliculas guardadas en DynamoDB (respuesta en espanol). |
+| `GET` | `/starwars/dynamo/films/{id}` | Consulta una pelicula de DynamoDB por ID (respuesta en espanol). |
+| `POST` | `/starwars/dynamo/films` | Crea una pelicula en DynamoDB enviando sus datos en ingles; responde en espanol con estado `201`. |
+
+La especificacion OpenAPI se encuentra en [`openapi.yml`](./openapi.yml). Sus
+esquemas se mantienen aparte en [`openapi-components.yml`](./openapi-components.yml).
+
+### Ejemplo: crear una pelicula
+
+```http
+POST /starwars/dynamo/films
+Content-Type: application/json
 ```
 
-## Compile and run the project
-
-```bash
-# build the application with TypeScript
-$ npm run build
-
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# run the compiled application in production
-$ npm run start:prod
+```json
+{
+  "episode_id": 4,
+  "title": "A New Hope",
+  "opening_crawl": "It is a period of civil war...",
+  "director": "George Lucas",
+  "producer": "Gary Kurtz, Rick McCallum",
+  "release_date": "1977-05-25",
+  "characters": [],
+  "planets": [],
+  "starships": [],
+  "vehicles": [],
+  "species": []
+}
 ```
 
-## Run tests
+Los campos del cuerpo corresponden al modelo en ingles. La API asigna el `id`
+al crear la pelicula y devuelve el resultado con campos en espanol.
+
+## ⚙️ Requisitos y configuracion
+
+- Node.js **24** y npm.
+- Una tabla de DynamoDB creada previamente.
+- Credenciales de AWS disponibles localmente o en el entorno donde se despliegue.
+
+Instala las dependencias:
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+npm install
 ```
 
-## SonarQube Cloud
+Configura las variables necesarias en un archivo `.env` en la raiz del proyecto:
 
-The GitHub Actions workflow runs the tests with coverage before starting the
-SonarQube Cloud scan. Add a repository secret named `SONAR_TOKEN` containing
-your SonarQube Cloud token. If automatic analysis is enabled for the project,
-disable it under **Administration > Analysis Method** so the CI-based workflow
-can upload the coverage report.
+```dotenv
+API_URL_BASE=https://swapi.dev/api/
+DYNAMO_DB_TABLE=STARTWARS_DYNAMO
+```
 
-## Deployment
+`API_URL_BASE` debe terminar en `/`, porque la aplicacion agrega `films` al
+final. `DYNAMO_DB_TABLE` debe coincidir con el nombre de la tabla existente en
+AWS. La tabla debe estar en la misma region y cuenta que la funcion Lambda, y
+tener una clave de particion numerica llamada `id`.
 
-The project compiles the Lambda handler with the Nest CLI/TypeScript compiler
-before Serverless packages and deploys the `dist` output with its runtime
-dependencies as an AWS HTTP API. The `start` and `deploy` scripts build first.
-Configure AWS credentials using the standard AWS credential provider chain,
-then deploy with:
+No guardes credenciales de AWS ni secretos en el repositorio. Para desarrollo
+local, configura el proveedor estandar de credenciales de AWS y la region
+(`AWS_REGION`) para que el SDK pueda conectarse a DynamoDB.
+
+## 🧪 Desarrollo y pruebas
+
+Compilar el proyecto:
+
+```bash
+npm run build
+```
+
+Iniciar la API localmente con Serverless Offline:
+
+```bash
+npm start
+```
+
+El servidor local queda disponible normalmente en `http://localhost:3000`.
+Por ejemplo, puedes consultar `http://localhost:3000/starwars/films`.
+Las rutas de DynamoDB requieren que la tabla configurada sea accesible desde tu
+entorno.
+
+Ejecutar las pruebas unitarias:
+
+```bash
+npm test -- --runInBand
+```
+
+Generar el reporte de cobertura:
+
+```bash
+npm run test:cov -- --runInBand
+```
+
+## ☁️ Despliegue en AWS
+
+El proyecto compila la aplicacion y Serverless Framework empaqueta y despliega
+el handler de NestJS como funcion Lambda con rutas de API Gateway. La tabla de
+DynamoDB debe existir antes del despliegue; la infraestructura configurada
+otorga a la funcion permisos para leer elementos, guardar elementos y recorrer
+la tabla.
+
+Configura las credenciales de AWS, las variables de entorno requeridas y el
+nombre de la tabla. Despues ejecuta:
 
 ```bash
 npm run deploy -- --stage dev --region us-west-1
 ```
 
-Create the DynamoDB table manually before deploying. Its name must match
-`DYNAMO_DB_TABLE` in `.env` (currently `STARTWARS_DYNAMO`), and it must be in the
-same AWS account and region as the deployment, with a numeric `id` partition
-key. The deployment does not create or delete the table; it grants the Lambda
-function `GetItem`, `PutItem`, and `Scan` access to its ARN. The API is available
-at the HTTP API URL printed after deployment. To remove a test deployment, run
-`npx serverless remove --stage dev --region us-west-1`. This removes the
-Serverless stack but leaves the manually managed table intact.
+Al finalizar, Serverless muestra la URL de la API desplegada. Para eliminar el
+stack de prueba (la tabla creada manualmente no se elimina), ejecuta:
 
-## Resources
+```bash
+npx serverless remove --stage dev --region us-west-1
+```
 
-Check out a few resources that may come in handy when working with NestJS:
+## 📊 Calidad continua
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+El workflow de GitHub Actions en
+`.github/workflows/sonarcloud.yml` se ejecuta en `push` a las ramas `develop`,
+`release` y `master`, y en pull requests. Ejecuta la compilacion, las pruebas
+con cobertura y luego el analisis de SonarQube Cloud.
 
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+Para habilitar el analisis, configura el secreto `SONAR_TOKEN` en la
+configuracion del repositorio de GitHub. Si el proyecto usa el analisis
+automatico de SonarQube Cloud, desactivalo para permitir que el workflow de CI
+envie el analisis junto con el reporte de cobertura.
